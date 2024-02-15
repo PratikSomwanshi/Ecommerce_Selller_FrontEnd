@@ -7,8 +7,10 @@ import {
   Spinner,
   Textarea,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import axios from "axios";
+import Link from "next/link";
 
 type Inputs = {
   name: string;
@@ -28,10 +30,90 @@ function page() {
   const {
     register,
     handleSubmit,
+    setError,
+
     watch,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
+  const [buffer, setBuffer] = useState<any>("");
+  const [loading, setLoading] = useState(false);
+  const [customError, setCustomError] = useState("");
+
+  function convertToBase64(data: any) {
+    let reader = new FileReader();
+    reader.readAsDataURL(data);
+    reader.onload = async function () {
+      console.log(reader.result);
+      setBuffer(reader.result);
+    };
+    reader.onerror = function (error) {
+      setError("image", {
+        type: "manual",
+        message: "Invalid Image",
+      });
+      return;
+    };
+
+    return reader.result;
+  }
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    if (!data.image[0]) {
+      setError("image", {
+        type: "manual",
+        message: "Image is Required",
+      });
+      return;
+    }
+
+    const d: any = data.image[0];
+
+    if (d.size >= 500000) {
+      setError("image", {
+        type: "manual",
+        message: "Image size should be less than 500kb",
+      });
+    } else {
+      if (buffer) {
+        try {
+          setLoading(true);
+          const response = await axios.post(
+            "http://localhost:5000/api/v1/products",
+            {
+              name: data.name,
+              price: data.price,
+              description: data.description,
+              category: data.category,
+              seller: "some string",
+              image: buffer,
+            },
+          );
+
+          setLoading(false);
+          console.log(response);
+        } catch (error) {
+          setLoading(false);
+          setCustomError("Failed to add the product");
+        }
+      } else {
+        setError("image", {
+          type: "manual",
+          message: "Invalid Image",
+        });
+        return;
+      }
+    }
+  };
+
+  if (customError) {
+    return (
+      <div className="flex h-[44rem] w-full items-center justify-center">
+        <h3 className="text-2xl">{customError}</h3>
+        <Link href="/">Home Page</Link>
+      </div>
+    );
+  }
 
   return (
     <section className="flex h-[44rem] items-center justify-center">
@@ -45,11 +127,16 @@ function page() {
               <Input
                 label="Name"
                 type="text"
+                isInvalid={errors.name ? true : false}
+                errorMessage={
+                  errors.name && (
+                    <div className="h-4 text-base">
+                      {errors.name && <span>Name is Required</span>}
+                    </div>
+                  )
+                }
                 {...register("name", { required: true })}
               />
-              <div className="h-4">
-                {errors.name && <span>Name is Required</span>}
-              </div>
             </div>
             <div className="w-1/2">
               <Input
@@ -77,7 +164,7 @@ function page() {
             </div>
           </div>
           <div className="flex gap-4">
-            <div className=" w-1/2">
+            <div className="w-1/2">
               <Select
                 label="Select an animal"
                 {...register("category", { required: true })}
@@ -92,18 +179,28 @@ function page() {
                 {errors.category && <span>Category is Required</span>}
               </div>
             </div>
-            <div>
-              <Input
-                type="file"
-                accept="image/*"
-                {...register("image", { required: true })}
-              />
+            <div className="w-1/2 ">
+              <div className="flex h-[77%] w-72 flex-col  items-start justify-center  overflow-hidden rounded-md bg-[#f4f4f5] px-2 hover:bg-[#e4e4e7] active:bg-[#e4e4e7]">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="w-full"
+                  {...register("image", {
+                    required: true,
+                    onChange(event) {
+                      convertToBase64(event.target.files[0]);
+                    },
+                  })}
+                />
+              </div>
               <div className="h-4">
-                {errors.image && <span>Image is Required</span>}
+                {errors.image && <span>{errors.image.message}</span>}
               </div>
             </div>
           </div>
-          <Button type="submit">click</Button>
+          <Button type="submit">
+            {loading ? <Spinner size="sm" /> : "ADD PRODUCT"}
+          </Button>
         </form>
       </div>
     </section>
