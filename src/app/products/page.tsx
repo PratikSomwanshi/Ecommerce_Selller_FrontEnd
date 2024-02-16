@@ -1,5 +1,6 @@
 import ProductCard from "@/components/ProductCard/ProductCard";
-import React from "react";
+import LocalSkeleton from "@/components/skeletorn/Skeleton";
+import React, { Suspense } from "react";
 
 interface Product {
   _id: string;
@@ -44,7 +45,11 @@ async function page() {
     <section className="container m-auto flex justify-center">
       <div className=" flex w-[70%] flex-wrap gap-8 p-4">
         {response.map((item: Product) => {
-          return <ProductCard key={item._id} data={item} />;
+          return (
+            <Suspense fallback={<LocalSkeleton />}>
+              <ProductCard key={item._id} data={item} />
+            </Suspense>
+          );
         })}
       </div>
     </section>
