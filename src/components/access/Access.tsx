@@ -4,7 +4,7 @@ import Link from "next/link";
 
 function Access() {
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center text-2xl">
+    <div className="flex h-[42rem] w-screen flex-col items-center justify-center text-2xl">
       <div>
         <h1>
           Please{" "}

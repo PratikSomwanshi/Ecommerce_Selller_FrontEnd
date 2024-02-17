@@ -13,6 +13,7 @@ import axios from "axios";
 import Link from "next/link";
 import Access from "@/components/access/Access";
 import { useCookies } from "react-cookie";
+import useStore from "@/store/seller";
 
 type Inputs = {
   name: string;
@@ -43,6 +44,7 @@ function page() {
     formState: { errors },
   } = useForm<Inputs>();
 
+  const { seller_id } = useStore();
   const [buffer, setBuffer] = useState<any>("");
   const [loading, setLoading] = useState(false);
   const [customError, setCustomError] = useState("");
@@ -85,14 +87,23 @@ function page() {
       if (buffer) {
         try {
           setLoading(true);
+          console.log({
+            name: data.name,
+            price: data.price,
+            description: data.description,
+            category: data.category,
+            seller: "something",
+            image: buffer,
+          });
+
           const response = await axios.post(
-            "http://localhost:5000/api/v1/products",
+            "http://localhost:2000/api/v1/sellers/product",
             {
               name: data.name,
               price: data.price,
               description: data.description,
               category: data.category,
-              seller: "some string",
+              seller: seller_id,
               image: buffer,
             },
           );
@@ -100,6 +111,7 @@ function page() {
           setLoading(false);
           console.log(response);
         } catch (error) {
+          console.log(error);
           setLoading(false);
           setCustomError("Failed to add the product");
         }

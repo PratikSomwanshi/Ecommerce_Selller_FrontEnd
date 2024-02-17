@@ -6,6 +6,7 @@ import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
+import useStore from "@/store/seller";
 
 interface Inputs {
   email: string;
@@ -13,20 +14,27 @@ interface Inputs {
 }
 
 function Register() {
+  const { addSellerId } = useStore();
   const [cookies, setCookie] = useCookies(["accessToken"]);
   const time = moment(new Date()).add(1, "d").toDate();
   const router = useRouter();
 
   const mutation = useMutation({
     mutationFn: async (user: Inputs) => {
-      return await fetch("http://localhost:2000/api/v1/sellers/signin", {
-        method: "post",
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "http://localhost:2000/api/v1/sellers/signin",
+        {
+          method: "post",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
         },
-        body: JSON.stringify(user),
-      }).then((res) => res.json());
+      ).then((res) => res.json());
+
+      addSellerId(response.data.id);
+      return response;
     },
   });
 
