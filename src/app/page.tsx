@@ -1,18 +1,15 @@
-import React from "react";
+"use client";
+import Home from "@/components/HomePage/Home";
+import Access from "@/components/access/Access";
+import { useCookies } from "react-cookie";
 
 function page() {
-  return (
-    <section className="h-auto space-y-8 px-4 py-8 text-lg">
-      <div className="h-full">
-        <h1 className="mb-2">Your Recent Products</h1>
-        <div className="h-[30rem] w-full bg-red-200"></div>
-      </div>
-      <div className="h-full">
-        <h1 className="mb-2">Your Popular Products</h1>
-        <div className="h-[30rem] w-full bg-red-200"></div>
-      </div>
-    </section>
-  );
+  const [cookies, setCookie] = useCookies(["accessToken"]);
+  if (!cookies["accessToken"]) {
+    return <Access />;
+  }
+
+  return <Home />;
 }
 
 export default page;

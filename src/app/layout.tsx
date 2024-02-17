@@ -4,6 +4,7 @@ import "./globals.css";
 import Navigation from "@/components/leftNavigation/Navigartion";
 import MainNavigation from "@/components/mainNavigation/MainNavigation";
 import NextUI from "@/components/NextUI/NextUI";
+import Access from "@/components/access/Access";
 
 const inter = Inter({ subsets: ["latin"] });
 

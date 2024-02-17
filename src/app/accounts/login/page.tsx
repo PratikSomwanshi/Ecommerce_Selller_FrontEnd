@@ -19,7 +19,7 @@ function Register() {
 
   const mutation = useMutation({
     mutationFn: async (user: Inputs) => {
-      return await fetch("http://localhost:8000/api/v1/users/signin", {
+      return await fetch("http://localhost:2000/api/v1/sellers/signin", {
         method: "post",
         cache: "no-store",
         headers: {
@@ -35,6 +35,8 @@ function Register() {
       setCookie("accessToken", mutation.data.data.token, {
         expires: time,
       });
+
+      // console.log("mutation.data", mutation.data.data);
 
       router.push("/");
     }

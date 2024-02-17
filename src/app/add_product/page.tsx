@@ -11,6 +11,8 @@ import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
 import Link from "next/link";
+import Access from "@/components/access/Access";
+import { useCookies } from "react-cookie";
 
 type Inputs = {
   name: string;
@@ -27,6 +29,11 @@ const categories = [
 ];
 
 function page() {
+  const [cookies, setCookie] = useCookies(["accessToken"]);
+  if (!cookies["accessToken"]) {
+    return <Access />;
+  }
+
   const {
     register,
     handleSubmit,

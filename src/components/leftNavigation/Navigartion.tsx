@@ -1,5 +1,6 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import Access from "../access/Access";
 
 const NoSSR = dynamic(() => import("./accountBtn/AccountBtn"), {
   ssr: false,

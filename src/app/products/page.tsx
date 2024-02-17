@@ -1,6 +1,9 @@
+"use client";
 import ProductCard from "@/components/ProductCard/ProductCard";
+import Access from "@/components/access/Access";
 import LocalSkeleton from "@/components/skeletorn/Skeleton";
 import React, { Suspense } from "react";
+import { useCookies } from "react-cookie";
 
 interface Product {
   _id: string;
@@ -31,6 +34,11 @@ async function getMensProducts() {
 }
 
 async function page() {
+  const [cookies, setCookie] = useCookies(["accessToken"]);
+  if (!cookies["accessToken"]) {
+    return <Access />;
+  }
+
   const response = await getMensProducts();
 
   if (response.error) {
