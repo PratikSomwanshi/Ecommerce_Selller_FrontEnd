@@ -41,23 +41,23 @@ function AddProduct() {
   const [loading, setLoading] = useState(false);
   const [customError, setCustomError] = useState("");
 
-  function convertToBase64(data: any) {
-    let reader = new FileReader();
-    reader.readAsDataURL(data);
-    reader.onload = async function () {
-      console.log(reader.result);
-      setBuffer(reader.result);
-    };
-    reader.onerror = function (error) {
-      setError("image", {
-        type: "manual",
-        message: "Invalid Image",
-      });
-      return;
-    };
+  // function convertToBase64(data: any) {
+  //   let reader = new FileReader();
+  //   reader.readAsDataURL(data);
+  //   reader.onload = async function () {
+  //     console.log(reader.result);
+  //     setBuffer(reader.result);
+  //   };
+  //   reader.onerror = function (error) {
+  //     setError("image", {
+  //       type: "manual",
+  //       message: "Invalid Image",
+  //     });
+  //     return;
+  //   };
 
-    return reader.result;
-  }
+  //   return reader.result;
+  // }
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (!data.image[0]) {
@@ -76,43 +76,36 @@ function AddProduct() {
         message: "Image size should be less than 500kb",
       });
     } else {
-      if (buffer) {
-        try {
-          setLoading(true);
-          console.log({
+      try {
+        setLoading(true);
+
+        let formData = new FormData();
+        formData.append("product", d);
+
+        const res = await axios({
+          method: "post",
+          url: "http://localhost:5000/api/v1/products/upload",
+          data: formData,
+        });
+
+        const response = await axios.post(
+          "http://localhost:2000/api/v1/sellers/product",
+          {
             name: data.name,
             price: data.price,
             description: data.description,
             category: data.category,
-            seller: "something",
-            image: buffer,
-          });
+            seller: seller_id,
+            image: res.data.data.image_url,
+          },
+        );
 
-          const response = await axios.post(
-            "http://localhost:2000/api/v1/sellers/product",
-            {
-              name: data.name,
-              price: data.price,
-              description: data.description,
-              category: data.category,
-              seller: seller_id,
-              image: buffer,
-            },
-          );
-
-          setLoading(false);
-          console.log(response);
-        } catch (error) {
-          console.log(error);
-          setLoading(false);
-          setCustomError("Failed to add the product");
-        }
-      } else {
-        setError("image", {
-          type: "manual",
-          message: "Invalid Image",
-        });
-        return;
+        setLoading(false);
+        // console.log(response);
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+        setCustomError("Failed to add the product");
       }
     }
   };
@@ -198,9 +191,6 @@ function AddProduct() {
                   className="w-full"
                   {...register("image", {
                     required: true,
-                    onChange(event) {
-                      convertToBase64(event.target.files[0]);
-                    },
                   })}
                 />
               </div>
