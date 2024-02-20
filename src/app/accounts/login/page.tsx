@@ -15,8 +15,6 @@ interface Inputs {
 
 function Register() {
   const { addSellerId } = useStore();
-  const [cookies, setCookie] = useCookies(["accessToken"]);
-  const time = moment(new Date()).add(1, "d").toDate();
   const router = useRouter();
 
   const mutation = useMutation({
@@ -40,9 +38,7 @@ function Register() {
 
   useEffect(() => {
     if (mutation.data && mutation.data.data.token) {
-      setCookie("accessToken", mutation.data.data.token, {
-        expires: time,
-      });
+      addSellerId(mutation.data.data.id);
 
       // console.log("mutation.data", mutation.data.data);
 
@@ -57,8 +53,6 @@ function Register() {
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => mutation.mutate(data);
-
-  // if (cookies["accessToken"])
 
   if (mutation.isError && mutation.error.name == "TypeError") {
     return (

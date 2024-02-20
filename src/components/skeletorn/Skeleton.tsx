@@ -4,7 +4,7 @@ import React from "react";
 
 function LocalSkeleton() {
   return (
-    <Card className="w-[200px] space-y-5 p-4" radius="lg">
+    <Card className="mr-4 h-[16rem] w-[18rem] space-y-5 p-4" radius="lg">
       <Skeleton className="rounded-lg">
         <div className="h-24 rounded-lg bg-default-300"></div>
       </Skeleton>

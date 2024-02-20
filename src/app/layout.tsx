@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/leftNavigation/Navigartion";
-import MainNavigation from "@/components/mainNavigation/MainNavigation";
 import NextUI from "@/components/NextUI/NextUI";
-import Access from "@/components/access/Access";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -1,14 +1,17 @@
 "use client";
+import useStore from "@/store/seller";
 import Link from "next/link";
 import React from "react";
 import { useCookies } from "react-cookie";
 
 function LinksLogout() {
-  const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
+  const { removeSellerId } = useStore();
   return (
     <>
       <Link
-        onClick={() => removeCookie("accessToken")}
+        onClick={() => {
+          removeSellerId("default");
+        }}
         href="/"
         className="rounded-full border border-slate-600 px-2 py-1 "
       >

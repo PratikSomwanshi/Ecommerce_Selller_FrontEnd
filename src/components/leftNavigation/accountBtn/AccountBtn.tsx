@@ -5,10 +5,18 @@ import { useCookies } from "react-cookie";
 
 import LinksRegister from "./LinksRegister";
 import LinksLogout from "./LinksLogout";
+import useStore from "@/store/seller";
 
 function AccountButton() {
-  const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
-  if (!cookies.accessToken) {
+  const { seller_id } = useStore();
+  const data: any = sessionStorage.getItem("store");
+  const localData = JSON.parse(data);
+  // if (data) {
+
+  //   if (localData.state.seller_id == "default") return <Access />;
+  // }
+
+  if (localData.state.seller_id == "default") {
     return (
       <div className="flex h-full w-full items-center justify-between">
         <LinksRegister />

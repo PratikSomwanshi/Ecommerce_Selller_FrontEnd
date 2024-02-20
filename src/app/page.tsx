@@ -1,15 +1,21 @@
 "use client";
 import Home from "@/components/HomePage/Home";
 import Access from "@/components/access/Access";
-import { useCookies } from "react-cookie";
+import LoadingLogo from "@/components/logo/loadingLogo";
+import useStore from "@/store/seller";
 
 function page() {
-  const [cookies, setCookie] = useCookies(["accessToken"]);
-  if (!cookies["accessToken"]) {
-    return <Access />;
+  const { seller_id } = useStore();
+
+  const data: any = sessionStorage.getItem("store");
+  if (data) {
+    const localData = JSON.parse(data);
+
+    if (localData.state.seller_id == "default") return <Access />;
   }
 
-  return <Home />;
+  if (seller_id == "default") return <LoadingLogo />;
+  return <Home seller_id={seller_id} />;
 }
 
 export default page;
