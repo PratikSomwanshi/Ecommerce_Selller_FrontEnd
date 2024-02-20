@@ -7,3 +7,31 @@
     @apply flex h-[44rem] w-full items-center justify-center text-2xl;
   }
 }
+
+.container-scroll {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+/* Define the scrollbar style */
+.container-scroll::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+}
+
+/* Define the thumb style */
+.container-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom right, #4d7fffb2 0%, #1a57ffb5 100%);
+  border-radius: 5px;
+}
+
+/* Define the track style */
+.container-scroll::-webkit-scrollbar-track {
+  background-color: #ddd;
+  border: 10px solid #ccc;
+}
+
+/* Define the button style when being hovered over */
+.container-scroll::-webkit-scrollbar-button:hover {
+  background-color: #999999;
+}
